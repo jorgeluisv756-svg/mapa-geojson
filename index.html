@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mapa pantalla completa con logos ajustados</title>
+  <title>Mapa pantalla completa con logos y estilos</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -54,7 +54,7 @@
       border-radius: 5px;
     }
     .logo-izquierda img {
-      width: 300px;
+      width: 320px;
       height: auto;
     }
     .info-header {
@@ -64,7 +64,7 @@
       margin-bottom: 10px;
     }
     .info-header img {
-      width: 100px; /* antes 80px */
+      width: 140px; /* logo lateral más grande */
       height: auto;
     }
   </style>
@@ -122,13 +122,31 @@
     fetch('mapa.geojson')
       .then(res => res.json())
       .then(data => {
-        // Polígonos
+        // Polígonos con estilo personalizado
         L.geoJSON(data, {
+          style: function(feature) {
+            const nombre = feature.properties.name;
+            if (nombre === "Distrito Local I. Zimapán") {
+              return {
+                color: "rgb(254, 189, 248)",   // borde
+                weight: 2,
+                fillColor: "rgb(254, 189, 248)", // relleno
+                fillOpacity: 1                 // opacidad máxima
+              };
+            }
+            // estilo por defecto para los demás
+            return {
+              color: "#333",
+              weight: 1,
+              fillColor: "#cccccc",
+              fillOpacity: 0.6
+            };
+          },
           onEachFeature: onEachFeature,
           filter: feature => feature.geometry.type !== "Point"
         }).addTo(map);
 
-        // Etiquetas permanentes
+        // Etiquetas permanentes para los puntos
         L.geoJSON(data, {
           pointToLayer: function (feature, latlng) {
             return L.marker(latlng).bindTooltip(
@@ -149,7 +167,6 @@
     });
   </script>
 </body>
-</html>
 
 
 
