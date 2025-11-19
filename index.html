@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mapa pantalla completa con panel fijo</title>
+  <title>Mapa pantalla completa con panel largo</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <style>
-    /* El mapa ocupa toda la pantalla */
     html, body {
       height: 100%;
       margin: 0;
@@ -16,21 +15,20 @@
       width: 100%;
       height: 100%;
     }
-    /* Panel fijo de información */
     .info {
-      position: absolute;   /* fijo en pantalla */
-      top: 10px;
-      right: 10px;
-      padding: 6px 8px;
-      font: 14px/16px Arial, Helvetica, sans-serif;
-      background: rgba(255,255,255,0.9);
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      border-radius: 5px;
-      min-width: 150px;     /* ancho mínimo */
-      max-width: 250px;     /* ancho máximo */
-      max-height: 2000px;    /* alto máximo */
-      overflow-y: auto;     /* scroll si hay mucha info */
-      overflow-x: hidden;   /* evita que se expanda horizontalmente */
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;           /* ocupa todo el alto de la pantalla */
+      width: 250px;           /* ancho fijo */
+      padding: 10px;
+      font-size: 14px;        /* tamaño de texto máximo */
+      font-family: Arial, Helvetica, sans-serif;
+      background: rgba(255,255,255,0.95);
+      box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+      overflow-y: auto;       /* scroll vertical si hay mucha info */
+      overflow-x: hidden;
+      border-left: 1px solid #ccc;
     }
   </style>
 </head>
@@ -45,13 +43,12 @@
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // Actualizar el panel fijo
     function updateInfo(props) {
       const infoDiv = document.getElementById("info");
       if (props) {
-        let contenido = "<b>Información</b><br>";
+        let contenido = "<h3>Información</h3>";
         for (const key in props) {
-          contenido += `<b>${key}</b>: ${props[key]}<br>`;
+          contenido += `<strong>${key}</strong>: ${props[key]}<br>`;
         }
         infoDiv.innerHTML = contenido;
       } else {
@@ -59,7 +56,6 @@
       }
     }
 
-    // Función para cada polígono
     function onEachFeature(feature, layer) {
       layer.on({
         click: function(e) {
@@ -68,7 +64,6 @@
       });
     }
 
-    // Cargar tu GeoJSON
     fetch('mapa.geojson')
       .then(res => res.json())
       .then(data => {
@@ -77,12 +72,12 @@
         }).addTo(map);
       });
 
-    // Ajustar mapa al cambiar tamaño de ventana
     window.addEventListener("resize", function() {
       map.invalidateSize();
     });
   </script>
 </body>
 </html>
+
 
 
