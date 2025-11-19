@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mapa pantalla completa</title>
+  <title>Mapa pantalla completa con panel fijo</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <style>
-    /* Elimina márgenes y ajusta todo a pantalla */
+    /* El mapa ocupa toda la pantalla */
     html, body {
       height: 100%;
       margin: 0;
@@ -16,20 +16,28 @@
       width: 100%;
       height: 100%;
     }
+    /* Panel fijo de información */
     .info {
+      position: absolute;   /* fijo en pantalla */
+      top: 10px;
+      right: 10px;
       padding: 6px 8px;
       font: 14px/16px Arial, Helvetica, sans-serif;
       background: rgba(255,255,255,0.9);
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
       border-radius: 5px;
-      width: 200px;
-      max-height: 150px;
-      overflow-y: auto;
+      min-width: 150px;     /* ancho mínimo */
+      max-width: 250px;     /* ancho máximo */
+      max-height: 200px;    /* alto máximo */
+      overflow-y: auto;     /* scroll si hay mucha info */
+      overflow-x: hidden;   /* evita que se expanda horizontalmente */
     }
   </style>
 </head>
 <body>
   <div id="map"></div>
+  <div class="info" id="info">Haz clic en un polígono</div>
+
   <script>
     var map = L.map('map').setView([20.1, -98.7], 12);
 
@@ -37,31 +45,25 @@
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // Panel de información
-    var info = L.control();
-    info.onAdd = function (map) {
-      this._div = L.DomUtil.create('div', 'info');
-      this.update();
-      return this._div;
-    };
-    info.update = function (props) {
+    // Actualizar el panel fijo
+    function updateInfo(props) {
+      const infoDiv = document.getElementById("info");
       if (props) {
         let contenido = "<b>Información</b><br>";
         for (const key in props) {
           contenido += `<b>${key}</b>: ${props[key]}<br>`;
         }
-        this._div.innerHTML = contenido;
+        infoDiv.innerHTML = contenido;
       } else {
-        this._div.innerHTML = "Haz clic en un polígono";
+        infoDiv.innerHTML = "Haz clic en un polígono";
       }
-    };
-    info.addTo(map);
+    }
 
     // Función para cada polígono
     function onEachFeature(feature, layer) {
       layer.on({
         click: function(e) {
-          info.update(feature.properties);
+          updateInfo(feature.properties);
         }
       });
     }
