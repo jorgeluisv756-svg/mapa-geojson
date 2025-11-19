@@ -1,14 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mapa con GeoJSON interactivo</title>
+  <title>Mapa pantalla completa</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    /* Elimina márgenes y ajusta todo a pantalla */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+    .info {
+      padding: 6px 8px;
+      font: 14px/16px Arial, Helvetica, sans-serif;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border-radius: 5px;
+      width: 200px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+  </style>
 </head>
 <body>
-  <h2>Mapa interactivo con polígonos</h2>
-  <div id="map" style="height: 500px;"></div>
+  <div id="map"></div>
   <script>
     var map = L.map('map').setView([20.1, -98.7], 12);
 
@@ -16,15 +37,33 @@
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
+    // Panel de información
+    var info = L.control();
+    info.onAdd = function (map) {
+      this._div = L.DomUtil.create('div', 'info');
+      this.update();
+      return this._div;
+    };
+    info.update = function (props) {
+      if (props) {
+        let contenido = "<b>Información</b><br>";
+        for (const key in props) {
+          contenido += `<b>${key}</b>: ${props[key]}<br>`;
+        }
+        this._div.innerHTML = contenido;
+      } else {
+        this._div.innerHTML = "Haz clic en un polígono";
+      }
+    };
+    info.addTo(map);
+
     // Función para cada polígono
     function onEachFeature(feature, layer) {
-      if (feature.properties) {
-        let contenido = "";
-        for (const key in feature.properties) {
-          contenido += `<b>${key}</b>: ${feature.properties[key]}<br>`;
+      layer.on({
+        click: function(e) {
+          info.update(feature.properties);
         }
-        layer.bindPopup(contenido);
-      }
+      });
     }
 
     // Cargar tu GeoJSON
@@ -35,7 +74,13 @@
           onEachFeature: onEachFeature
         }).addTo(map);
       });
+
+    // Ajustar mapa al cambiar tamaño de ventana
+    window.addEventListener("resize", function() {
+      map.invalidateSize();
+    });
   </script>
 </body>
 </html>
+
 
