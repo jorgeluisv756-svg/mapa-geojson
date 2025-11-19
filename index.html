@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mapa pantalla completa con logos y etiquetas</title>
+  <title>Mapa pantalla completa con logos ajustados</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -53,6 +53,10 @@
       padding: 5px;
       border-radius: 5px;
     }
+    .logo-izquierda img {
+      width: 100px;
+      height: auto;
+    }
     .info-header {
       display: flex;
       align-items: center;
@@ -60,7 +64,7 @@
       margin-bottom: 10px;
     }
     .info-header img {
-      width: 80px;
+      width: 100px; /* antes 80px */
       height: auto;
     }
   </style>
@@ -146,5 +150,6 @@
   </script>
 </body>
 </html>
+
 
 
