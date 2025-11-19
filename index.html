@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mapa pantalla completa con etiquetas y panel ancho</title>
+  <title>Mapa pantalla completa con logos y etiquetas</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -15,7 +15,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      right: 350px; /* espacio para el panel */
+      right: 350px;
       bottom: 0;
       z-index: 0;
     }
@@ -24,7 +24,7 @@
       top: 0;
       right: 0;
       bottom: 0;
-      width: 350px; /* antes 250px */
+      width: 350px;
       padding: 10px;
       font-size: 14px;
       font-family: Arial, Helvetica, sans-serif;
@@ -44,11 +44,43 @@
       color: #333;
       border: 1px solid #ccc;
     }
+    .logo-izquierda {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1001;
+      background: rgba(255,255,255,0.8);
+      padding: 5px;
+      border-radius: 5px;
+    }
+    .info-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .info-header img {
+      width: 80px;
+      height: auto;
+    }
   </style>
 </head>
 <body>
   <div id="map"></div>
-  <div class="info" id="info">Haz clic en un polígono</div>
+
+  <!-- Logo superior izquierdo -->
+  <div class="logo-izquierda">
+    <img src="https://github.com/jorgeluisv756-svg/imagenes_kmz/blob/7c7924c0d0c89c5adaf112d1b8e3fb9db3258400/Logotipo%20armas30%20(1).png?raw=true" alt="Logo superior izquierdo">
+  </div>
+
+  <!-- Panel de información con logo lateral -->
+  <div class="info" id="info">
+    <div class="info-header">
+      <h3>Información</h3>
+      <img src="https://github.com/jorgeluisv756-svg/imagenes_kmz/blob/7c7924c0d0c89c5adaf112d1b8e3fb9db3258400/Comparecencias%20logo.png?raw=true" alt="Logo lateral">
+    </div>
+    Haz clic en un polígono
+  </div>
 
   <script>
     var map = L.map('map').setView([20.1, -98.7], 12);
@@ -59,15 +91,20 @@
 
     function updateInfo(props) {
       const infoDiv = document.getElementById("info");
+      let contenido = `
+        <div class="info-header">
+          <h3>Información</h3>
+          <img src="https://github.com/jorgeluisv756-svg/imagenes_kmz/blob/7c7924c0d0c89c5adaf112d1b8e3fb9db3258400/Comparecencias%20logo.png?raw=true" alt="Logo lateral">
+        </div>
+      `;
       if (props) {
-        let contenido = "<h3>Información</h3>";
         for (const key in props) {
           contenido += `<strong>${key}</strong>: ${props[key]}<br>`;
         }
-        infoDiv.innerHTML = contenido;
       } else {
-        infoDiv.innerHTML = "Haz clic en un polígono";
+        contenido += "Haz clic en un polígono";
       }
+      infoDiv.innerHTML = contenido;
     }
 
     function onEachFeature(feature, layer) {
@@ -81,13 +118,13 @@
     fetch('mapa.geojson')
       .then(res => res.json())
       .then(data => {
-        // Polígonos con interacción
+        // Polígonos
         L.geoJSON(data, {
           onEachFeature: onEachFeature,
           filter: feature => feature.geometry.type !== "Point"
         }).addTo(map);
 
-        // Puntos con etiquetas permanentes
+        // Etiquetas permanentes
         L.geoJSON(data, {
           pointToLayer: function (feature, latlng) {
             return L.marker(latlng).bindTooltip(
@@ -109,4 +146,5 @@
   </script>
 </body>
 </html>
+
 
