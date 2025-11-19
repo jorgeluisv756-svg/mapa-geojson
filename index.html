@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mapa con GeoJSON</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+  <h2>Mi mapa con GeoJSON</h2>
+  <div id="map" style="height: 500px;"></div>
+  <script>
+    // Crear mapa centrado en Pachuca
+    var map = L.map('map').setView([20.1, -98.7], 12);
+
+    // Capa base de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Cargar tu GeoJSON
+    fetch('mapa.geojson')
+      .then(res => res.json())
+      .then(data => {
+        L.geoJSON(data).addTo(map);
+      });
+  </script>
+</body>
+</html>
