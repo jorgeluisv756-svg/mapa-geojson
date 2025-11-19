@@ -64,7 +64,7 @@
       margin-bottom: 10px;
     }
     .info-header img {
-      width: 140px; /* logo lateral más grande */
+      width: 140px;
       height: auto;
     }
   </style>
@@ -87,7 +87,7 @@
   </div>
 
   <script>
-    var map = L.map('map').setView([20.1, -98.7], 12);
+    var map = L.map('map').setView([20.1, -98.7], 8);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
@@ -119,27 +119,40 @@
       });
     }
 
+    // 🎨 Colores por distrito
+    const coloresDistritos = {
+      "Distrito Local I. Zimapán": "rgb(254, 189, 248)",
+      "Distrito Local II. Zacualtipán de Ángeles": "rgb(189, 253, 182)",
+      "Distrito Local III. Tlanchinol": "rgb(253, 209, 180)",
+      "Distrito Local IV. Huejutla de Reyes": "rgb(190, 234, 255)",
+      "Distrito Local V. Ixmiquilpan": "rgb(253, 247, 180)",
+      "Distrito Local VI. Huichapan": "rgb(212, 253, 229)",
+      "Distrito Local VII. Mixquiahuala de Juárez": "rgb(253, 178, 190)",
+      "Distrito Local VIII. Actopan": "rgb(236, 213, 254)",
+      "Distrito Local IX. Metepec": "rgb(180, 196, 255)",
+      "Distrito Local X. Zempoala": "rgb(252, 254, 215)",
+      "Distrito Local XI. Tulancingo de Bravo": "rgb(205, 182, 254)",
+      "Distrito Local XII. Pachuca de Soto (Oriente)": "rgb(255, 215, 222)",
+      "Distrito Local XIII. Pachuca de Soto (Poniente)": "rgb(178, 252, 253)",
+      "Distrito Local XIV. Tula de Allende": "rgb(227, 255, 191)",
+      "Distrito Local XV. Tepeji del Río de Ocampo": "rgb(254, 181, 217)",
+      "Distrito Local XVI. Tizayuca": "rgb(254, 230, 214)",
+      "Distrito Local XVII. Mineral de la Reforma": "rgb(182, 254, 208)",
+      "Distrito Local XVIII. Tepeapulco": "rgb(215, 224, 254)"
+    };
+
     fetch('mapa.geojson')
       .then(res => res.json())
       .then(data => {
-        // Polígonos con estilo personalizado
+        // Polígonos con colores personalizados
         L.geoJSON(data, {
           style: function(feature) {
             const nombre = feature.properties.name;
-            if (nombre === "Distrito Local I. Zimapán") {
-              return {
-                color: "rgb(254, 189, 248)",   // borde
-                weight: 2,
-                fillColor: "rgb(254, 189, 248)", // relleno
-                fillOpacity: 1                 // opacidad máxima
-              };
-            }
-            // estilo por defecto para los demás
             return {
               color: "#333",
               weight: 1,
-              fillColor: "#cccccc",
-              fillOpacity: 0.6
+              fillColor: coloresDistritos[nombre] || "#cccccc",
+              fillOpacity: 1 // opacidad máxima
             };
           },
           onEachFeature: onEachFeature,
@@ -167,6 +180,8 @@
     });
   </script>
 </body>
+</html>
+
 
 
 
